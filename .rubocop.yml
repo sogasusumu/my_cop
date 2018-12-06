@@ -60,27 +60,22 @@ AllCops:
     - 'node_modules/**/*'
     - 'vendor/**/*'
     - '.git/**/*'
-  # Default formatter will be used if no `-f/--format` option is given.
+  # `-f /  -  format`オプションを指定しないと、デフォルトのフォーマッタが使用されます。
   DefaultFormatter: progress
-  # Cop names are displayed in offense messages by default. Change behavior
-  # by overriding DisplayCopNames, or by giving the `--no-display-cop-names`
-  # option.
+  # コップ名はデフォルトで犯行メッセージに表示されます。
+  # DisplayCopNamesをオーバーライドするか、 `--no-display-cop-names`オプションを指定することで動作を変更してください。
   DisplayCopNames: true
-  # Style guide URLs are not displayed in offense messages by default. Change
-  # behavior by overriding `DisplayStyleGuide`, or by giving the
-  # `-S/--display-style-guide` option.
-  DisplayStyleGuide: false
-  # When specifying style guide URLs, any paths and/or fragments will be
-  # evaluated relative to the base URL.
+  # デフォルトでは、スタイルガイドのURLは違反メッセージには表示されません。
+  # `DisplayStyleGuide`をオーバーライドするか、` -S / -  display-style-guide`オプションを指定して動作を変更してください。
+  DisplayStyleGuide: true
+  # スタイルガイドのURLを指定するときは、ベースURLを基準にしてパスやフラグメントが評価されます。
   StyleGuideBaseURL: https://github.com/rubocop-hq/ruby-style-guide
-  # Extra details are not displayed in offense messages by default. Change
-  # behavior by overriding ExtraDetails, or by giving the
-  # `-E/--extra-details` option.
-  ExtraDetails: false
-  # Additional cops that do not reference a style guide rule may be enabled by
-  # default. Change behavior by overriding `StyleGuideCopsOnly`, or by giving
-  # the `--only-guide-cops` option.
-  StyleGuideCopsOnly: false
+  # デフォルトでは、追加の詳細は攻撃メッセージに表示されません。
+  # ExtraDetailsをオーバーライドするか、 `-E /  -  extra-details`オプションを指定して動作を変更してください。
+  ExtraDetails: true
+  # スタイルガイドルールを参照しない追加の警官は、デフォルトで有効にすることができます。
+  # `StyleGuideCopsOnly`をオーバーライドするか、` --only-guide-cops`オプションを指定して動作を変更してください。
+  StyleGuideCopsOnly: true
   # All cops except the ones configured `Enabled: false` in this file are enabled by default.
   # Change this behavior by overriding either `DisabledByDefault` or `EnabledByDefault`.
   # When `DisabledByDefault` is `true`, all cops in the default configuration
@@ -2088,31 +2083,141 @@ Layout/MultilineMethodCallBraceLayout:
 
 Layout/MultilineMethodCallIndentation:
   Description: >-
-                 Checks indentation of method calls with the dot operator
-                 that span more than one line.
+                 複数の行にまたがるドット演算子を使用して、メソッド呼び出しのインデントをチェックします。
+
   Enabled: true
   VersionAdded: '0.49'
   EnforcedStyle: aligned
   SupportedStyles:
     - aligned
+    #  aligned (default)
+    #  # bad
+    #  while myvariable
+    #  .b
+    #    # do something
+    #  end
+    #
+    #  # good
+    #  while myvariable
+    #        .b
+    #    # do something
+    #  end
+    #
+    #  # good
+    #  Thing.a
+    #       .b
+    #       .c
+
     - indented
+    #  indented
+    #  # good
+    #  while myvariable
+    #    .b
+    #
+    #    # do something
+    #  end
+
     - indented_relative_to_receiver
+     #  indented_relative_to_receiver
+      #  # good
+      #  while myvariable
+      #          .a
+      #          .b
+      #
+      #    # do something
+      #  end
+      #
+      #  # good
+      #  myvariable = Thing
+      #                 .a
+      #                 .b
+      #                 .c
+
   # By default, the indentation width from Layout/IndentationWidth is used
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
 Layout/MultilineMethodDefinitionBraceLayout:
   Description: >-
-                 Checks that the closing brace in a method definition is
-                 either on the same line as the last method parameter, or
-                 a new line.
+                 メソッド定義の閉じ括弧が最後のメソッドパラメータと同じ行か、新しい行かをチェックします。
   Enabled: true
   VersionAdded: '0.49'
   EnforcedStyle: symmetrical
   SupportedStyles:
-    # symmetrical: closing brace is positioned in same way as opening brace
-    # new_line: closing brace is always on a new line
-    # same_line: closing brace is always on the same line as last parameter
+    # symmetrical: 閉鎖ブレースは開口ブレースと同じ方法で配置される
+    # bad
+    #    def foo(a,
+    #      b
+    #    )
+    #    end
+    #
+    #    # bad
+    #    def foo(
+    #      a,
+    #      b)
+    #    end
+    #
+    #    # good
+    #    def foo(a,
+    #      b)
+    #    end
+    #
+    #    # good
+    #    def foo(
+    #      a,
+    #      b
+    #    )
+    #    end
+
+    # new_line: 閉じ括弧は常に新しい行にあります
+    # bad
+    #    def foo(
+    #      a,
+    #      b)
+    #    end
+    #
+    #    # bad
+    #    def foo(a,
+    #      b)
+    #    end
+    #
+    #    # good
+    #    def foo(a,
+    #      b
+    #    )
+    #    end
+    #
+    #    # good
+    #    def foo(
+    #      a,
+    #      b
+    #    )
+    #    end
+    # same_line: 閉じ括弧は常に最後のパラメータと同じ行にあります
+    #    # bad
+    #    def foo(a,
+    #      b
+    #    )
+    #    end
+    #
+    #    # bad
+    #    def foo(
+    #      a,
+    #      b
+    #    )
+    #    end
+    #
+    #    # good
+    #    def foo(
+    #      a,
+    #      b)
+    #    end
+    #
+    #    # good
+    #    def foo(a,
+    #      b)
+    #    end
+
     - symmetrical
     - new_line
     - same_line
